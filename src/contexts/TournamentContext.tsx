@@ -87,6 +87,39 @@ export const TournamentProvider = ({ children }: { children: ReactNode }) => {
     return () => { mounted = false; };
   }, []);
 
+  // Local storage helpers
+  const LS_KEYS = {
+    tournaments: 'matchupp:tournaments',
+    clubs: 'matchupp:clubs',
+    currentClub: 'matchupp:currentClub',
+  };
+
+  const safeParse = (s: string | null) => {
+    if (!s) return null;
+    try { return JSON.parse(s); } catch { return null; }
+  };
+
+  // Load persisted state on mount (fallback/cache)
+  useEffect(() => {
+    const persistedT = safeParse(localStorage.getItem(LS_KEYS.tournaments));
+    const persistedC = safeParse(localStorage.getItem(LS_KEYS.clubs));
+    const persistedCur = safeParse(localStorage.getItem(LS_KEYS.currentClub));
+    if (persistedT && Array.isArray(persistedT)) setTournaments(persistedT);
+    if (persistedC && Array.isArray(persistedC)) setClubs(persistedC);
+    if (persistedCur) setCurrentClub(persistedCur);
+  }, []);
+
+  // persist whenever these states change
+  useEffect(() => {
+    try { localStorage.setItem(LS_KEYS.tournaments, JSON.stringify(tournaments)); } catch {}
+  }, [tournaments]);
+  useEffect(() => {
+    try { localStorage.setItem(LS_KEYS.clubs, JSON.stringify(clubs)); } catch {}
+  }, [clubs]);
+  useEffect(() => {
+    try { localStorage.setItem(LS_KEYS.currentClub, JSON.stringify(currentClub)); } catch {}
+  }, [currentClub]);
+
   const createTournament = async (tournamentData: Omit<Tournament, 'id' | 'participants' | 'matches' | 'status'>) => {
     if (!API_BASE) {
       const newTournament: Tournament = {
@@ -246,6 +279,7 @@ export const TournamentProvider = ({ children }: { children: ReactNode }) => {
     });
     if (!res.ok) return false;
     const club = await res.json();
+    setClubs(prev => [...prev, club]);
     setCurrentClub(club);
     return true;
   };
