@@ -1,6 +1,9 @@
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { Trophy, Calendar, Users } from 'lucide-react';
+import { QRCodeSVG } from 'qrcode.react';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Bracket } from '@/components/Bracket';
@@ -164,6 +167,32 @@ const PlayerView = () => {
               </Card>
             </div>
           )}
+            {/* QR code widget for players */}
+            <Card>
+              <CardHeader>
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between w-full">
+                  <div>
+                    <CardTitle>Share Join Link</CardTitle>
+                    <CardDescription>Players can scan the QR code or open the link to join</CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-col md:flex-row items-center gap-6">
+                  <div className="bg-card p-4 rounded border flex-shrink-0">
+                    <QRCodeSVG value={`${window.location.origin}/join/${tournament.id}`} size={140} />
+                  </div>
+
+                  <div className="flex-1 min-w-0">
+                    <Input value={`${window.location.origin}/join/${tournament.id}`} readOnly className="w-full truncate" />
+                    <div className="mt-4 flex gap-2 flex-wrap">
+                      <Button onClick={() => { navigator.clipboard.writeText(`${window.location.origin}/join/${tournament.id}`); }}>Copy Link</Button>
+                      <Button variant="outline" onClick={() => window.open(`${window.location.origin}/join/${tournament.id}`, '_blank')}>Open Join Page</Button>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
         </div>
       </main>
     </div>
