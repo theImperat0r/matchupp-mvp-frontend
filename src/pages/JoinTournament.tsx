@@ -104,6 +104,9 @@ const JoinTournament = () => {
             >
               View Tournament Bracket
             </Button>
+            <div className="mt-2">
+              <Button variant="ghost" className="w-full" onClick={() => navigate(`/player/${tournamentId}`)}>View Tournament</Button>
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -162,6 +165,9 @@ const JoinTournament = () => {
                 : 'Join Tournament'}
             </Button>
           </form>
+          <div className="mt-4">
+            <Button variant="ghost" className="w-full" onClick={() => navigate(`/player/${tournamentId}`)}>View Tournament</Button>
+          </div>
         </CardContent>
       </Card>
     </div>
