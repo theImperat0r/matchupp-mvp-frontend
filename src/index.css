@@ -1,0 +1,93 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    --background: 0 0% 95%;
+    --foreground: 0 0% 0%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 0%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 0%;
+
+    --primary: 238 93% 48%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 219 89% 56%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 214 76% 76%;
+    --muted-foreground: 238 93% 48%;
+
+    --accent: 248 53% 88%;
+    --accent-foreground: 238 93% 48%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 214 76% 76%;
+    --input: 0 0% 95%;
+    --ring: 238 93% 48%;
+
+    --radius: 0.75rem;
+
+    /* Custom gaming tokens */
+    --primary-dark: 238 93% 48%;
+    --primary-medium: 219 89% 56%;
+    --primary-light: 214 76% 76%;
+    --primary-pale: 248 53% 88%;
+    
+    --transition-smooth: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .dark {
+    --background: 0 0% 7%;
+    --foreground: 0 0% 95%;
+
+    --card: 0 0% 10%;
+    --card-foreground: 0 0% 95%;
+
+    --popover: 0 0% 10%;
+    --popover-foreground: 0 0% 95%;
+
+    --primary: 238 93% 48%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 219 89% 56%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 214 76% 76%;
+    --muted-foreground: 238 93% 48%;
+
+    --accent: 248 53% 88%;
+    --accent-foreground: 238 93% 48%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 20%;
+    --input: 0 0% 15%;
+    --ring: 238 93% 48%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold;
+  }
+}
