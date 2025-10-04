@@ -11,12 +11,17 @@ import { Bracket } from '@/components/Bracket';
 import { useTournament } from '@/contexts/TournamentContext';
 import { toast } from 'sonner';
 
+
+
+
 const TournamentManagement = () => {
   const { tournamentId } = useParams<{ tournamentId: string }>();
-  const { getTournamentById, getTournamentByIdSync, updateMatch, startTournament } = useTournament();
+  const { getTournamentById, getTournamentByIdSync, updateMatch, startTournament, currentClub } = useTournament();
+  
   const navigate = useNavigate();
 
   const syncTournament = tournamentId ? getTournamentByIdSync(tournamentId) : undefined;
+  
   const [tournament, setTournament] = useState<any | undefined>(syncTournament);
 
   useEffect(() => {
@@ -84,6 +89,7 @@ const TournamentManagement = () => {
       <Navigation />
       
       <main className="container mx-auto px-4 py-8">
+        {currentClub && (
         <Button
           variant="ghost"
           className="mb-6"
@@ -92,6 +98,7 @@ const TournamentManagement = () => {
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back to Dashboard
         </Button>
+        )}
 
         <div className="space-y-6">
           {/* Tournament Info */}

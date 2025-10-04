@@ -85,11 +85,6 @@ export const Bracket = ({ matches, onWinnerSelect, isClubView = false }: Bracket
                 <Button size="sm" variant="outline" onClick={() => zoomOut()}>Zoom Out</Button>
                 <Button size="sm" variant="ghost" onClick={() => resetTransform()}>Reset</Button>
               </div>
-              {currentClub && (
-                <div className="ml-auto">
-                  <Button size="sm" variant="outline" onClick={() => navigate('/dashboard')}>Back to Dashboard</Button>
-                </div>
-              )}
             </div>
             <div className="border p-2 rounded overflow-auto max-h-[65vh]">
               <TransformComponent>
