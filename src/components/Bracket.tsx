@@ -12,19 +12,32 @@ interface BracketProps {
   isClubView?: boolean;
 }
 
+// Helper: map a numeric round to a friendly label (Final/Semifinal/Quarterfinal or Round N)
+const formatRoundLabel = (roundNumber: number, totalRounds: number) => {
+  const diff = totalRounds - roundNumber;
+  if (diff === 0) return 'Final';
+  if (diff === 1) return 'Semifinal';
+  if (diff === 2) return 'Quarterfinal';
+  return `Round ${roundNumber}`;
+};
+
 const RoundColumn = ({ title, matches, onClickMatch }: any) => (
-  <div className="flex flex-col gap-4 min-w-[260px]">
+  <div className="flex flex-col gap-4 min-w-[320px]">
     <div className="text-center text-sm font-bold text-muted-foreground uppercase tracking-wider mb-2">{title}</div>
     <div className="flex flex-col gap-4">
       {matches.map((m: Match) => (
         <div key={m.id} className="cursor-pointer" onClick={() => onClickMatch(m)}>
           <Card className={`border ${m.winner ? 'bg-muted/5' : 'hover:shadow-lg'}`}>
-            <CardContent className="p-2">
-              <div className={`p-2 ${m.winner === m.player1 ? 'bg-primary text-primary-foreground font-bold' : ''}`}>
+            <CardContent className="p-3">
+              <div className="flex justify-between items-center mb-2">
+                <div className="text-xs text-muted-foreground">Match #{m.matchNumber}</div>
+                <div className="text-xs text-muted-foreground">R{m.round}</div>
+              </div>
+              <div className={`p-2 rounded ${m.winner === m.player1 ? 'bg-primary text-primary-foreground font-bold' : ''}`}>
                 <div className="text-sm">{m.player1 || 'TBD'}</div>
               </div>
               <div className="text-xs text-center text-muted-foreground py-1">VS</div>
-              <div className={`p-2 ${m.winner === m.player2 ? 'bg-primary text-primary-foreground font-bold' : ''}`}>
+              <div className={`p-2 rounded ${m.winner === m.player2 ? 'bg-primary text-primary-foreground font-bold' : ''}`}>
                 <div className="text-sm">{m.player2 || 'TBD'}</div>
               </div>
             </CardContent>
@@ -70,8 +83,13 @@ export const Bracket = ({ matches, onWinnerSelect, isClubView = false }: Bracket
             <div className="border p-2 rounded">
               <TransformComponent>
                 <div className="inline-flex gap-6 px-4">
-                  {Object.entries(matchesByRound).map(([round, roundMatches]) => (
-                    <RoundColumn key={round} title={`Round ${round}`} matches={roundMatches} onClickMatch={openMatch} />
+                  {Object.entries(matchesByRound).map(([round, roundMatches], idx) => (
+                    <div key={round} className={`relative ${idx < Object.keys(matchesByRound).length - 1 ? 'pr-6' : ''}`}>
+                      <RoundColumn title={formatRoundLabel(Number(round), rounds)} matches={roundMatches} onClickMatch={openMatch} />
+                      {idx < Object.keys(matchesByRound).length - 1 && (
+                        <div className="absolute right-0 top-0 h-full w-0.5 bg-border/60" />
+                      )}
+                    </div>
                   ))}
                 </div>
               </TransformComponent>
