@@ -11,6 +11,7 @@ const PlayerView = () => {
   const { getTournamentById, getTournamentByIdSync } = useTournament();
   const syncTournament = tournamentId ? getTournamentByIdSync(tournamentId) : undefined;
   const [tournament, setTournament] = useState<any | undefined>(syncTournament);
+  const [playerNick, setPlayerNick] = useState<string | null>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -21,6 +22,15 @@ const PlayerView = () => {
       }
     };
     load();
+    try {
+      const p = localStorage.getItem(`matchupp:player:${tournamentId}`);
+      if (p) {
+        const parsed = JSON.parse(p);
+        setPlayerNick(parsed?.nickname || null);
+      }
+    } catch (e) {
+      // ignore
+    }
     return () => { mounted = false; };
   }, [tournamentId]);
 
@@ -139,9 +149,21 @@ const PlayerView = () => {
               <Bracket
                 matches={tournament.matches}
                 isClubView={false}
+                highlightName={playerNick}
               />
             </CardContent>
           </Card>
+          {/* show player's nickname if present */}
+          {playerNick && (
+            <div className="mt-4">
+              <Card>
+                <CardContent className="py-4 text-center">
+                  <div className="text-sm text-muted-foreground">You are playing as</div>
+                  <div className="font-semibold text-lg mt-1">{playerNick}</div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
         </div>
       </main>
     </div>

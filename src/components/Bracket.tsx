@@ -12,6 +12,7 @@ interface BracketProps {
   matches: Match[];
   onWinnerSelect?: (matchId: string, winner: string) => void;
   isClubView?: boolean;
+  highlightName?: string | null;
 }
 
 // Helper: map a numeric round to a friendly label (Final/Semifinal/Quarterfinal or Round N)
@@ -23,7 +24,7 @@ const formatRoundLabel = (roundNumber: number, totalRounds: number) => {
   return `Round ${roundNumber}`;
 };
 
-const RoundRow = ({ title, matches, onClickMatch }: any) => (
+const RoundRow = ({ title, matches, onClickMatch, highlightName }: any) => (
   <div className="flex flex-col gap-3 w-full">
     <div className="text-center text-sm font-bold text-muted-foreground uppercase tracking-wider mb-2">{title}</div>
     <div className="flex gap-4 justify-center flex-wrap">
@@ -35,11 +36,11 @@ const RoundRow = ({ title, matches, onClickMatch }: any) => (
                 <div className="text-xs text-muted-foreground">#{m.matchNumber}</div>
                 <div className="text-xs text-muted-foreground">R{m.round}</div>
               </div>
-              <div className={`p-2 rounded truncate ${m.winner === m.player1 ? 'bg-primary text-primary-foreground font-bold' : ''}`}>
+              <div className={`p-2 rounded truncate ${m.winner === m.player1 ? 'bg-primary text-primary-foreground font-bold' : ''} ${highlightName && highlightName === m.player1 ? 'ring-2 ring-accent/40' : ''}`}>
                 <div className="text-sm truncate">{m.player1 || 'TBD'}</div>
               </div>
               <div className="text-xs text-center text-muted-foreground py-1">VS</div>
-              <div className={`p-2 rounded truncate ${m.winner === m.player2 ? 'bg-primary text-primary-foreground font-bold' : ''}`}>
+              <div className={`p-2 rounded truncate ${m.winner === m.player2 ? 'bg-primary text-primary-foreground font-bold' : ''} ${highlightName && highlightName === m.player2 ? 'ring-2 ring-accent/40' : ''}`}>
                 <div className="text-sm truncate">{m.player2 || 'TBD'}</div>
               </div>
             </CardContent>

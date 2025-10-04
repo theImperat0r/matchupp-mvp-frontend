@@ -77,6 +77,12 @@ const JoinTournament = () => {
       // refresh tournament if API is enabled
       const refreshed = await getTournamentById(tournamentId!);
       if (refreshed) setTournament(refreshed);
+      try {
+        // persist the player nickname for quick access in PlayerView
+        localStorage.setItem(`matchupp:player:${tournamentId}`, JSON.stringify({ nickname }));
+      } catch (e) {
+        // ignore storage errors
+      }
     } else {
       toast.error('Unable to join tournament');
     }
