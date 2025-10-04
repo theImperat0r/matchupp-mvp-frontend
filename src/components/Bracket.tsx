@@ -1,135 +1,114 @@
-import { Trophy, Circle } from 'lucide-react';
+import React, { useState } from 'react';
+import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Match } from '@/contexts/TournamentContext';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { QRCodeSVG } from 'qrcode.react';
 
 interface BracketProps {
   matches: Match[];
   onWinnerSelect?: (matchId: string, winner: string) => void;
   isClubView?: boolean;
-  highlightPlayer?: string;
 }
 
-export const Bracket = ({ matches, onWinnerSelect, isClubView = false, highlightPlayer }: BracketProps) => {
-  if (!matches || matches.length === 0) {
-    return (
-      <div className="flex items-center justify-center py-12 text-muted-foreground">
-        No bracket available yet
-      </div>
-    );
-  }
+const RoundColumn = ({ title, matches, onClickMatch }: any) => (
+  <div className="flex flex-col gap-4 min-w-[260px]">
+    <div className="text-center text-sm font-bold text-muted-foreground uppercase tracking-wider mb-2">{title}</div>
+    <div className="flex flex-col gap-4">
+      {matches.map((m: Match) => (
+        <div key={m.id} className="cursor-pointer" onClick={() => onClickMatch(m)}>
+          <Card className={`border ${m.winner ? 'bg-muted/5' : 'hover:shadow-lg'}`}>
+            <CardContent className="p-2">
+              <div className={`p-2 ${m.winner === m.player1 ? 'bg-primary text-primary-foreground font-bold' : ''}`}>
+                <div className="text-sm">{m.player1 || 'TBD'}</div>
+              </div>
+              <div className="text-xs text-center text-muted-foreground py-1">VS</div>
+              <div className={`p-2 ${m.winner === m.player2 ? 'bg-primary text-primary-foreground font-bold' : ''}`}>
+                <div className="text-sm">{m.player2 || 'TBD'}</div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
+export const Bracket = ({ matches, onWinnerSelect, isClubView = false }: BracketProps) => {
+  const [selectedMatch, setSelectedMatch] = useState<Match | null>(null);
+  const [open, setOpen] = useState(false);
+
+  if (!matches || matches.length === 0) return <div className="py-12 text-muted-foreground text-center">No bracket available yet</div>;
 
   const rounds = Math.max(...matches.map(m => m.round));
   const matchesByRound: { [key: number]: Match[] } = {};
-  
-  for (let i = 1; i <= rounds; i++) {
-    matchesByRound[i] = matches.filter(m => m.round === i);
-  }
+  for (let i = 1; i <= rounds; i++) matchesByRound[i] = matches.filter(m => m.round === i);
 
-  const getRoundName = (round: number) => {
-    if (round === rounds) return 'Final';
-    if (round === rounds - 1) return 'Semi-Finals';
-    if (round === rounds - 2) return 'Quarter-Finals';
-    return `Round ${round}`;
+  const openMatch = (m: Match) => {
+    setSelectedMatch(m);
+    setOpen(true);
   };
 
-  const isPlayerInMatch = (match: Match) => {
-    if (!highlightPlayer) return false;
-    return match.player1 === highlightPlayer || match.player2 === highlightPlayer;
+  const handleWin = (winner: string) => {
+    if (!selectedMatch) return;
+    onWinnerSelect?.(selectedMatch.id, winner);
+    setOpen(false);
+    setSelectedMatch(null);
   };
 
   return (
-    <div className="overflow-x-auto pb-4">
-      <div className="inline-flex gap-8 min-w-full justify-center px-4">
-        {Object.entries(matchesByRound).map(([round, roundMatches]) => (
-          <div key={round} className="flex flex-col gap-4 min-w-[280px]">
-            <h3 className="text-sm font-bold text-center text-muted-foreground uppercase tracking-wider mb-2">
-              {getRoundName(Number(round))}
-            </h3>
-            <div className="flex flex-col gap-6">
-              {roundMatches.map((match) => (
-                <Card 
-                  key={match.id}
-                  className={`border-2 transition-all ${
-                    isPlayerInMatch(match) 
-                      ? 'ring-2 ring-primary border-primary shadow-lg' 
-                      : match.winner 
-                        ? 'border-muted bg-muted/5' 
-                        : 'border-border hover:border-primary-light'
-                  }`}
-                >
-                  <CardContent className="p-0">
-                    {/* Player 1 */}
-                    <div className={`p-4 border-b flex items-center justify-between transition-colors ${
-                      match.winner === match.player1 
-                        ? 'bg-primary text-primary-foreground font-bold' 
-                        : match.player1 
-                          ? 'hover:bg-accent/50' 
-                          : 'bg-muted/30'
-                    }`}>
-                      <div className="flex items-center gap-3">
-                        {match.winner === match.player1 ? (
-                          <Trophy className="h-5 w-5 flex-shrink-0" />
-                        ) : (
-                          <Circle className="h-5 w-5 flex-shrink-0 text-muted-foreground" />
-                        )}
-                        <span className={`text-sm ${!match.player1 ? 'text-muted-foreground italic' : ''}`}>
-                          {match.player1 || 'TBD'}
-                        </span>
-                      </div>
-                      {isClubView && match.player1 && match.player2 && !match.winner && (
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          className="h-7 px-3 text-xs hover:bg-primary hover:text-primary-foreground"
-                          onClick={() => onWinnerSelect?.(match.id, match.player1!)}
-                        >
-                          Win
-                        </Button>
-                      )}
-                    </div>
-
-                    {/* VS Divider */}
-                    <div className="bg-card py-1">
-                      <div className="text-center text-xs font-bold text-muted-foreground">VS</div>
-                    </div>
-
-                    {/* Player 2 */}
-                    <div className={`p-4 flex items-center justify-between transition-colors ${
-                      match.winner === match.player2 
-                        ? 'bg-primary text-primary-foreground font-bold' 
-                        : match.player2 
-                          ? 'hover:bg-accent/50' 
-                          : 'bg-muted/30'
-                    }`}>
-                      <div className="flex items-center gap-3">
-                        {match.winner === match.player2 ? (
-                          <Trophy className="h-5 w-5 flex-shrink-0" />
-                        ) : (
-                          <Circle className="h-5 w-5 flex-shrink-0 text-muted-foreground" />
-                        )}
-                        <span className={`text-sm ${!match.player2 ? 'text-muted-foreground italic' : ''}`}>
-                          {match.player2 || 'TBD'}
-                        </span>
-                      </div>
-                      {isClubView && match.player1 && match.player2 && !match.winner && (
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          className="h-7 px-3 text-xs hover:bg-primary hover:text-primary-foreground"
-                          onClick={() => onWinnerSelect?.(match.id, match.player2!)}
-                        >
-                          Win
-                        </Button>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+    <div>
+      <TransformWrapper initialScale={0.9} minScale={0.5} maxScale={2} centerOnInit>
+        {({ zoomIn, zoomOut, resetTransform }) => (
+          <div>
+            <div className="flex gap-2 mb-3">
+              <Button size="sm" onClick={() => zoomIn()}>Zoom In</Button>
+              <Button size="sm" variant="outline" onClick={() => zoomOut()}>Zoom Out</Button>
+              <Button size="sm" variant="ghost" onClick={() => resetTransform()}>Reset</Button>
+            </div>
+            <div className="border p-2 rounded">
+              <TransformComponent>
+                <div className="inline-flex gap-6 px-4">
+                  {Object.entries(matchesByRound).map(([round, roundMatches]) => (
+                    <RoundColumn key={round} title={`Round ${round}`} matches={roundMatches} onClickMatch={openMatch} />
+                  ))}
+                </div>
+              </TransformComponent>
             </div>
           </div>
-        ))}
-      </div>
+        )}
+      </TransformWrapper>
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Match Details</DialogTitle>
+            <DialogDescription>
+              Choose the winner to advance to the next round
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="py-4 space-y-4">
+            <div className="text-center">
+              <div className="text-sm text-muted-foreground">Player 1</div>
+              <div className="text-lg font-semibold">{selectedMatch?.player1 || 'TBD'}</div>
+            </div>
+            <div className="text-center">
+              <div className="text-sm text-muted-foreground">Player 2</div>
+              <div className="text-lg font-semibold">{selectedMatch?.player2 || 'TBD'}</div>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <div className="flex gap-2">
+              <Button onClick={() => setOpen(false)} variant="outline">Cancel</Button>
+              <Button disabled={!selectedMatch?.player1} onClick={() => handleWin(selectedMatch!.player1!)}>{selectedMatch?.player1 ? `Give Win to ${selectedMatch.player1}` : 'No Player'}</Button>
+              <Button disabled={!selectedMatch?.player2} onClick={() => handleWin(selectedMatch!.player2!)}>{selectedMatch?.player2 ? `Give Win to ${selectedMatch.player2}` : 'No Player'}</Button>
+            </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { Calendar, Users, Trophy, ArrowLeft, Play } from 'lucide-react';
+import { QRCodeSVG } from 'qrcode.react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -148,23 +149,44 @@ const TournamentManagement = () => {
             </CardContent>
           </Card>
 
-          {/* Participants List */}
-          {tournament.participants.length > 0 && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Registered Players</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-wrap gap-2">
-                  {tournament.participants.map((player, index) => (
-                    <Badge key={index} variant="outline" className="text-sm py-1 px-3">
-                      {player}
-                    </Badge>
-                  ))}
+          {/* Bracket (always visible; players seen before start) */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Tournament Bracket</CardTitle>
+              <CardDescription>
+                {tournament.status === 'upcoming' && 'Bracket (players shown even before start)'}
+                {tournament.status === 'ongoing' && 'Select winners to advance the bracket'}
+                {tournament.status === 'completed' && 'Tournament completed!'}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Bracket
+                matches={tournament.matches}
+                onWinnerSelect={handleWinnerSelect}
+                isClubView={true}
+              />
+            </CardContent>
+          </Card>
+
+          {/* QR code widget */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Share Join Link</CardTitle>
+              <CardDescription>Players can scan QR or open link to join</CardDescription>
+            </CardHeader>
+            <CardContent className="flex flex-col md:flex-row items-center gap-6">
+              <div className="bg-card p-4 rounded border">
+                <QRCodeSVG value={`${window.location.origin}/join/${tournament.id}`} size={160} />
+              </div>
+              <div className="flex-1">
+                <div className="break-words">{`${window.location.origin}/join/${tournament.id}`}</div>
+                <div className="mt-4 flex gap-2">
+                  <Button onClick={() => navigator.clipboard.writeText(`${window.location.origin}/join/${tournament.id}`)}>Copy Link</Button>
+                  <Button variant="outline" onClick={() => window.open(`${window.location.origin}/join/${tournament.id}`, '_blank')}>Open Join Page</Button>
                 </div>
-              </CardContent>
-            </Card>
-          )}
+              </div>
+            </CardContent>
+          </Card>
 
           {/* Bracket */}
           {tournament.status !== 'upcoming' && (

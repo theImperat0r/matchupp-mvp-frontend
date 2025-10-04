@@ -59,7 +59,7 @@ const PlayerView = () => {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center gap-2">
             <Trophy className="h-6 w-6 text-primary" />
-            <span className="text-xl font-bold">MatchUpp</span>
+            <span className="text-xl font-bold">matchupp</span>
           </div>
         </div>
       </header>
