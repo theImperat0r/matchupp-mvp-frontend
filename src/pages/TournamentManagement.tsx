@@ -176,7 +176,6 @@ const TournamentManagement = () => {
                 matches={tournament.matches}
                 onWinnerSelect={handleWinnerSelect}
                 currentClub={currentClub}
-                isClubOwner={!!(currentClub && tournament && currentClub.id === tournament.clubId)}
               />
             </CardContent>
           </Card>

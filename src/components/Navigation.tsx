@@ -54,7 +54,7 @@ export const Navigation = () => {
         <div className="flex items-center justify-between h-16">
           <Link to="/dashboard" className="flex items-center gap-2">
             <Trophy className="h-6 w-6 text-primary" />
-            <span className="text-xl font-bold">MatchUpp</span>
+            <span className="text-xl font-bold">matchupp</span>
           </Link>
           
           <div className="flex items-center gap-4">

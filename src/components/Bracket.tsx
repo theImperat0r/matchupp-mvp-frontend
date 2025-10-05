@@ -21,7 +21,6 @@ interface BracketProps {
   onWinnerSelect?: (matchId: string, winner: string) => void;
   currentClub?: any;
   highlightName?: string | null;
-  isClubOwner?: boolean;
 }
 
 const formatRoundLabel = (roundNumber: number, totalRounds: number) => {
@@ -143,7 +142,7 @@ const RoundColumn = ({ title, matches, onClickMatch, highlightName, isCompact }:
   </div>
 );
 
-export const Bracket = ({ matches, onWinnerSelect, currentClub, highlightName, isClubOwner }: BracketProps) => {
+export const Bracket = ({ matches, onWinnerSelect, currentClub, highlightName }: BracketProps) => {
   const [selectedMatch, setSelectedMatch] = useState<Match | null>(null);
   const [open, setOpen] = useState(false);
   const [currentRound, setCurrentRound] = useState(1);
@@ -341,7 +340,6 @@ export const Bracket = ({ matches, onWinnerSelect, currentClub, highlightName, i
         setOpen={setOpen}
         selectedMatch={selectedMatch}
         currentClub={currentClub}
-        isClubOwner={isClubOwner}
         handleWin={handleWin}
       />
     </div>
@@ -349,7 +347,7 @@ export const Bracket = ({ matches, onWinnerSelect, currentClub, highlightName, i
 };
 
 // Separate Match Dialog Component
-const MatchDialog = ({ open, setOpen, selectedMatch, currentClub, isClubOwner, handleWin }: any) => (
+const MatchDialog = ({ open, setOpen, selectedMatch, currentClub, handleWin }: any) => (
   <Dialog open={open} onOpenChange={setOpen}>
     <DialogContent className="sm:max-w-md">
       <DialogHeader>
@@ -408,7 +406,7 @@ const MatchDialog = ({ open, setOpen, selectedMatch, currentClub, isClubOwner, h
       </div>
 
       <DialogFooter className="flex-col sm:flex-col gap-3">
-        {isClubOwner ? (
+        {currentClub ? (
           <div className="flex gap-2 w-full">
             <Button 
               className="flex-1 rounded-lg font-semibold"
