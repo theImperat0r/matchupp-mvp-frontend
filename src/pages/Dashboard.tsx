@@ -8,7 +8,10 @@ import { useTournament } from '@/contexts/TournamentContext';
 
 const Dashboard = () => {
   const { tournaments, currentClub } = useTournament();
-  const clubTournaments = tournaments.filter(t => t.clubId === currentClub?.id);
+  const clubTournaments = tournaments
+    .filter(t => t.clubId === currentClub?.id)
+    .slice()
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
   const getStatusColor = (status: string) => {
     switch (status) {
