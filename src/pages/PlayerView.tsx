@@ -77,7 +77,7 @@ const PlayerView = () => {
         </div>
       </header>
 
-      <main className="container py-8 pb-20">
+      <main className="container pb-20">
                   <img src="/herobg.png" alt="Hero" className=" w-full max-w-md" />
 
         <div className="space-y-6">
