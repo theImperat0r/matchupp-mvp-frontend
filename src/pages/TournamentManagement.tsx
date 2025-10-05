@@ -23,7 +23,10 @@ const TournamentManagement = () => {
   const syncTournament = tournamentId ? getTournamentByIdSync(tournamentId) : undefined;
   
   const [tournament, setTournament] = useState<any | undefined>(syncTournament);
-  const isClubOwner = !!(currentClub && syncTournament ? currentClub.id === syncTournament.clubId : false);
+
+  // Robust ownership detection: some API shapes may use clubId, club.id, club_id, etc.
+  const tournamentClubId = tournament?.clubId ?? tournament?.club?.id ?? tournament?.club_id ?? tournament?.ownerId ?? tournament?.owner?.id ?? null;
+  const isClubOwner = !!(currentClub && tournamentClubId && String(currentClub.id) === String(tournamentClubId));
 
   useEffect(() => {
     let mounted = true;
