@@ -9,7 +9,7 @@ import { useTournament } from '@/contexts/TournamentContext';
 import { toast } from 'sonner';
 
 const Auth = () => {
-  const [isLogin, setIsLogin] = useState(true);
+  const [isLogin, setIsLogin] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -56,7 +56,8 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+    <div className="min-h-screen bg-white flex flex-col items-center justify-center p-4">
+      <img src="/hero.png" alt="Hero" className=" w-full max-w-md" />
       <Card className="w-full max-w-md border-0 shadow-none">
         <CardContent className="pt-8 px-6">
           <div className="mb-8">
