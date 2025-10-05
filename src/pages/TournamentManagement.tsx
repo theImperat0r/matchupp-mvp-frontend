@@ -171,7 +171,6 @@ const TournamentManagement = () => {
               <Bracket
                 matches={tournament.matches}
                 onWinnerSelect={handleWinnerSelect}
-                isClubView={true}
               />
             </CardContent>
           </Card>

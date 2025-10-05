@@ -151,7 +151,6 @@ const PlayerView = () => {
             <CardContent>
               <Bracket
                 matches={tournament.matches}
-                isClubView={false}
                 highlightName={playerNick}
               />
             </CardContent>
