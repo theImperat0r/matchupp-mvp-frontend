@@ -23,6 +23,7 @@ const TournamentManagement = () => {
   const syncTournament = tournamentId ? getTournamentByIdSync(tournamentId) : undefined;
   
   const [tournament, setTournament] = useState<any | undefined>(syncTournament);
+  const isClubOwner = !!(currentClub && syncTournament ? currentClub.id === syncTournament.clubId : false);
 
   useEffect(() => {
     let mounted = true;
@@ -171,6 +172,8 @@ const TournamentManagement = () => {
               <Bracket
                 matches={tournament.matches}
                 onWinnerSelect={handleWinnerSelect}
+                currentClub={currentClub}
+                isClubOwner={!!(currentClub && tournament && currentClub.id === tournament.clubId)}
               />
             </CardContent>
           </Card>
