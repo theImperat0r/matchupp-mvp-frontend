@@ -409,7 +409,7 @@ const MatchDialog = ({ open, setOpen, selectedMatch, currentClub, handleWin }: a
         {currentClub ? (
           <div className="flex gap-2 w-full">
             <Button 
-              className="flex-1 rounded-lg font-semibold"
+              className="flex-1 rounded-lg font-semibold border-1"
               disabled={!selectedMatch?.player1}
               onClick={() => handleWin(selectedMatch!.player1!)}
               variant={selectedMatch?.winner === selectedMatch?.player1 ? "default" : "outline"}
@@ -417,7 +417,7 @@ const MatchDialog = ({ open, setOpen, selectedMatch, currentClub, handleWin }: a
               {selectedMatch?.player1 || 'No Player'} Wins
             </Button>
             <Button 
-              className="flex-1 rounded-lg font-semibold"
+              className="flex-1 rounded-lg font-semibold border-1"
               disabled={!selectedMatch?.player2}
               onClick={() => handleWin(selectedMatch!.player2!)}
               variant={selectedMatch?.winner === selectedMatch?.player2 ? "default" : "outline"}
