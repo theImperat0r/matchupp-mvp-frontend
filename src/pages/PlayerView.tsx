@@ -81,7 +81,6 @@ const PlayerView = () => {
                   <img src="/herobg.png" alt="Hero" className=" w-full max-w-md" />
 
         <div className="space-y-6">
-          {/* Tournament Header */}
           {/* <img src="/herobg.png" alt="Hero" className=" w-full max-w-md" /> */}
           <Card>
             <CardHeader>
